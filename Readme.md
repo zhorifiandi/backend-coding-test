@@ -69,7 +69,7 @@ Please implement the following refactors of the code:
 
 1. Convert callback style code to use `async/await`
 2. Reduce complexity at top level control flow logic and move logic down and test independently
-3. **[BONUS]**Split between functional and imperative function and test independently
+3. **[BONUS]** Split between functional and imperative function and test independently
 
 #### Success Criteria
 
@@ -82,7 +82,7 @@ Please implement the following refactors of the code:
 Please implement the following security controls for your system:
 
 1. Ensure the system is not vulnerable to [SQL injection](https://www.owasp.org/index.php/SQL_Injection)
-2. **[BONUS]**Surprise us by implements any security method to secure your system (mentioned your security solutions in your documentation)
+2. **[BONUS]** Implement an additional security improvement of your choice
 
 #### Success Criteria
 
