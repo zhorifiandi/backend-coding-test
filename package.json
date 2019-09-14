@@ -7,9 +7,12 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha tests",
+    "test": "nyc --reporter=html --reporter=text mocha tests",
     "start": "node index.js"
   },
+  "pre-push": [
+    "test"
+  ],
   "keywords": [
     "Xendit"
   ],
@@ -28,6 +31,7 @@
     "eslint-plugin-import": "^2.18.2",
     "mocha": "^6.1.4",
     "nyc": "^14.1.1",
+    "pre-push": "^0.1.1",
     "supertest": "^4.0.2"
   }
 }
