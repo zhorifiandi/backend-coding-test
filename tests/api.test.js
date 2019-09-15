@@ -1,21 +1,22 @@
-'use strict';
 
-const request = require('supertest');
+const request = require("supertest");
 
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database(':memory:');
+const sqlite3 = require("sqlite3").verbose();
 
-const app = require('../src/app')(db);
-const buildSchemas = require('../src/schemas');
+const db = new sqlite3.Database(":memory:");
+
+const app = require("../src/app")(db);
+const rides = require("../src/model/rides");
+
 
 describe('API tests', () => {
     before((done) => {
-        db.serialize((err) => { 
+        db.serialize((err) => {
             if (err) {
                 return done(err);
             }
 
-            buildSchemas(db);
+            rides.CreateTableRides(db);
 
             done();
         });
