@@ -22,9 +22,9 @@ module.exports.CreateTableRides = (db) => {
 };
 
 
-module.exports.GetRides = (db, res) => {
-  const getRidesQuery = "SELECT * FROM Rides";
-  db.all(getRidesQuery, (err, rows) => {
+module.exports.GetRides = (db, limit, offset, res) => {
+  const getRidesQuery = "SELECT * FROM Rides LIMIT ? OFFSET ?";
+  db.all(getRidesQuery, [limit, offset], (err, rows) => {
     if (err) {
       logger.info(err);
       return res.send({

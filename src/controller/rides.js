@@ -1,7 +1,15 @@
 const rides = require("../model/rides");
 
 // Handler for GET /rides
-module.exports.GetRides = (db, req, res) => rides.GetRides(db, res);
+module.exports.GetRides = (db, req, res) => {
+  // Get Params
+  const limit = req.query.per_page || 5;
+  const page = req.query.page || 1;
+
+  // Offset Calculation
+  const offset = limit * (page - 1);
+  return rides.GetRides(db, limit, offset, res);
+};
 
 // Handler for GET /rides/:id
 module.exports.GetRideById = (db, req, res) => rides.GetRideById(db, res, req.params.id);
