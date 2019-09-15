@@ -92,7 +92,7 @@ describe("API tests", () => {
     });
   });
 
-  describe("GET /rides/:id with data", () => {
+  describe("GET /rides with pagination params page=2&per_page=3", () => {
     before((done) => {
       db.serialize((err) => {
         if (err) {
@@ -101,15 +101,32 @@ describe("API tests", () => {
 
         const values = [0, 0, 0, 0, "Rider name", "Driver name", "Driver vehicle"];
         const insertQuery = "INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        db.run(insertQuery, values, (err) => {});
+        const numDummy = 9
+        for (let i = 0; i < numDummy; i++) {
+          db.run(insertQuery, values, (err) => {});
+        }
 
         done();
       });
     });
 
+    it("should return success and have 3 elements", (done) => {
+      request(app)
+        .get("/rides?page=2&per_page=3")
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .expect((res) => {
+          if (res.body.length != 3) {
+            throw new Error('Response body should have 3 elements');
+          }
+        })
+        .expect(200, done);
+    });
+  });
+
+  describe("GET /rides/:id with data", () => {
     it("should return success", (done) => {
       request(app)
-        .get("/rides/2")
+        .get("/rides/1")
         .expect("Content-Type", "application/json; charset=utf-8")
         .expect((res) => {
           for (let i = 0; i < res.body.length; i++) {
