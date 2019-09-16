@@ -1,5 +1,4 @@
 const SqlString = require("sqlstring");
-const logger = require("../util/logger");
 
 module.exports.CreateTableRides = (db) => {
   const createRideTableSchema = `
@@ -22,81 +21,54 @@ module.exports.CreateTableRides = (db) => {
   return db;
 };
 
-
-module.exports.GetRides = (db, limit, offset, res) => {
-  const getRidesQuery = SqlString.format("SELECT * FROM Rides LIMIT ? OFFSET ?", [limit, offset]);
-  db.all(getRidesQuery, (err, rows) => {
-    if (err) {
-      logger.info(err);
-      return res.send({
-        error_code: "SERVER_ERROR",
-        message: "Unknown error",
-      });
-    }
-
+module.exports.GetRides = async function getRides(db, limit, offset) {
+  try {
+    const getRidesQuery = SqlString.format("SELECT * FROM Rides LIMIT ? OFFSET ?", [limit, offset]);
+    const rows = await db.allAsync(getRidesQuery);
     if (rows.length === 0) {
-      logger.info("RIDES_NOT_FOUND_ERROR");
-      return res.send({
+      return {
         error_code: "RIDES_NOT_FOUND_ERROR",
         message: "Could not find any rides",
-      });
+      };
     }
-
-    logger.info(rows);
-    return res.send(rows);
-  });
-
-  return db;
+    return rows;
+  } catch (err) {
+    return {
+      error_code: "SERVER_ERROR",
+      message: "Unknown error",
+    };
+  }
 };
 
-module.exports.InsertRide = (db, res, values) => {
-  const insertQuery = SqlString.format("INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)", values);
-  db.run(insertQuery, function InsertHandle(err) {
-    if (err) {
-      logger.info(err);
-      return res.send({
-        error_code: "SERVER_ERROR",
-        message: "Unknown error",
-      });
-    }
-
-    db.all("SELECT * FROM Rides WHERE rideID = ?", this.lastID, (errDB, rows) => {
-      if (errDB) {
-        logger.info(err);
-        return res.send({
-          error_code: "SERVER_ERROR",
-          message: "Unknown error",
-        });
-      }
-
-      logger.info(rows);
-      return res.send(rows);
-    });
-  });
-  return db;
+module.exports.InsertRide = async function insertRide(db, values) {
+  try {
+    const insertQuery = SqlString.format("INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)", values);
+    const insertedRow = await db.runAsync(insertQuery);
+    const lastRide = await db.allAsync(SqlString.format("SELECT * FROM Rides WHERE rideID = ?", insertedRow.lastID));
+    return lastRide;
+  } catch (err) {
+    return {
+      error_code: "SERVER_ERROR",
+      message: "Unknown error",
+    };
+  }
 };
 
-module.exports.GetRideById = (db, res, id) => {
-  const findQuery = SqlString.format("SELECT * FROM Rides WHERE rideID=?", id);
-  db.all(findQuery, (err, rows) => {
-    if (err) {
-      logger.info(err);
-      return res.send({
-        error_code: "SERVER_ERROR",
-        message: "Unknown error",
-      });
-    }
-
+module.exports.GetRideById = async function getRideById(db, id) {
+  try {
+    const findQuery = SqlString.format("SELECT * FROM Rides WHERE rideID=?", id);
+    const rows = await db.allAsync(findQuery);
     if (rows.length === 0) {
-      logger.info("RIDES_NOT_FOUND_ERROR");
-      return res.send({
+      return {
         error_code: "RIDES_NOT_FOUND_ERROR",
         message: "Could not find any rides",
-      });
+      };
     }
-
-    logger.info(rows);
-    return res.send(rows);
-  });
-  return db;
+    return rows;
+  } catch (err) {
+    return {
+      error_code: "SERVER_ERROR",
+      message: "Unknown error",
+    };
+  }
 };

@@ -1,10 +1,7 @@
-const sqlite3 = require("sqlite3").verbose();
 const rides = require("./src/model/rides");
 const app = require("./src/app");
 const logger = require("./src/util/logger");
-
-
-const db = new sqlite3.Database(":memory:");
+const db = require("./src/db/sqlite");
 const port = 8010;
 
 db.serialize(() => {

@@ -1,10 +1,5 @@
-
 const request = require("supertest");
-
-const sqlite3 = require("sqlite3").verbose();
-
-const db = new sqlite3.Database(":memory:");
-
+const db = require("../src/db/sqlite");
 const config = require("config");
 const username = config.get("BasicAuth.username");
 const password = config.get("BasicAuth.password");
