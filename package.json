@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "NODE_ENV=test nyc --reporter=html --reporter=text mocha tests",
+    "test:load": "artillery run artillery/config.yml",
     "eslint-fix": "eslint --fix src",
     "start": "node index.js"
   },
