@@ -5,6 +5,10 @@ const sqlite3 = require("sqlite3").verbose();
 
 const db = new sqlite3.Database(":memory:");
 
+const config = require("config");
+const username = config.get("BasicAuth.username");
+const password = config.get("BasicAuth.password");
+
 const app = require("../src/app")(db);
 const rides = require("../src/model/rides");
 
@@ -25,8 +29,17 @@ describe("API tests", () => {
     it("should return health", (done) => {
       request(app)
         .get("/health")
+        .auth(username, password)
         .expect("Content-Type", /text/)
         .expect(200, done);
+    });
+  });
+
+  describe("GET /rides no auth given", () => {
+    it("should return not authorized error", (done) => {
+      request(app)
+        .get("/rides")
+        .expect(401, done);
     });
   });
 
@@ -34,6 +47,7 @@ describe("API tests", () => {
     it("should return not found error", (done) => {
       request(app)
         .get("/rides")
+        .auth(username, password)
         .expect("Content-Type", "application/json; charset=utf-8")
         .expect(200, {
           error_code: "RIDES_NOT_FOUND_ERROR",
@@ -46,6 +60,7 @@ describe("API tests", () => {
     it("should return not found error", (done) => {
       request(app)
         .get("/rides/1")
+        .auth(username, password)
         .expect("Content-Type", "application/json; charset=utf-8")
         .expect(200, {
           error_code: "RIDES_NOT_FOUND_ERROR",
@@ -72,6 +87,7 @@ describe("API tests", () => {
     it("should return success", (done) => {
       request(app)
         .get("/rides")
+        .auth(username, password)
         .expect("Content-Type", "application/json; charset=utf-8")
         .expect((res) => {
           for (let i = 0; i < res.body.length; i++) {
@@ -113,6 +129,7 @@ describe("API tests", () => {
     it("should return success and have 3 elements", (done) => {
       request(app)
         .get("/rides?page=2&per_page=3")
+        .auth(username, password)
         .expect("Content-Type", "application/json; charset=utf-8")
         .expect((res) => {
           if (res.body.length != 3) {
@@ -127,6 +144,7 @@ describe("API tests", () => {
     it("should return success", (done) => {
       request(app)
         .get("/rides/1")
+        .auth(username, password)
         .expect("Content-Type", "application/json; charset=utf-8")
         .expect((res) => {
           for (let i = 0; i < res.body.length; i++) {
@@ -153,6 +171,7 @@ describe("API tests", () => {
     it("should return success", (done) => {
       request(app)
         .post("/rides")
+        .auth(username, password)
         .send({
           start_lat: 0,
           start_long: 0,
@@ -188,6 +207,7 @@ describe("API tests", () => {
     it("should return error response", (done) => {
       request(app)
         .post("/rides")
+        .auth(username, password)
         .send({
           start_lat: -200,
           start_long: 200,
@@ -216,6 +236,7 @@ describe("API tests", () => {
     it("should return error response", (done) => {
       request(app)
         .post("/rides")
+        .auth(username, password)
         .send({
           start_lat: 0,
           start_long: 0,
@@ -244,6 +265,7 @@ describe("API tests", () => {
     it("should return error", (done) => {
       request(app)
         .post("/rides")
+        .auth(username, password)
         .send({
           start_lat: 0,
           start_long: 0,
@@ -272,6 +294,7 @@ describe("API tests", () => {
     it("should return error", (done) => {
       request(app)
         .post("/rides")
+        .auth(username, password)
         .send({
           start_lat: 0,
           start_long: 0,
@@ -300,6 +323,7 @@ describe("API tests", () => {
     it("should return error", (done) => {
       request(app)
         .post("/rides")
+        .auth(username, password)
         .send({
           start_lat: 0,
           start_long: 0,
