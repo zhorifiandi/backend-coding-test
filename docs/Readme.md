@@ -7,6 +7,9 @@ Here, we define list of endpoints that available on this service.
 ```bash
 GET 'http://localhost:8010/rides?page=2&per_page=3'
 ```
+Basic Authentication:
+- Default ```admin:supersecret```
+
 Params:
 - page - Integer - Represents a page of records you want to fetch (Default: 1)
 - per_page - Integer - Represents a number of elements contained on a page (Default: 5)
@@ -16,6 +19,9 @@ Params:
 ```bash
 GET 'http://localhost:8010/rides/:id'
 ```
+Basic Authentication:
+- Default ```admin:supersecret```
+
 Params:
 - id - Integer - Ride's id you want to fetch
 
@@ -25,6 +31,9 @@ Params:
 ```bash
 POST 'http://localhost:8010/rides' -H 'Content-Type: application/json'
 ```
+Basic Authentication:
+- Default ```admin:supersecret```
+
 Body:
 ```json
 {

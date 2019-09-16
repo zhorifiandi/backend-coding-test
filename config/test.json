@@ -1,0 +1,7 @@
+{
+  // Basic Auth Config
+  "BasicAuth": {
+    "username": "admin",
+    "password": "supersecret"
+  }
+}

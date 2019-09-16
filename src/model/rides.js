@@ -1,3 +1,4 @@
+const SqlString = require("sqlstring");
 const logger = require("../util/logger");
 
 module.exports.CreateTableRides = (db) => {
@@ -23,8 +24,8 @@ module.exports.CreateTableRides = (db) => {
 
 
 module.exports.GetRides = (db, limit, offset, res) => {
-  const getRidesQuery = "SELECT * FROM Rides LIMIT ? OFFSET ?";
-  db.all(getRidesQuery, [limit, offset], (err, rows) => {
+  const getRidesQuery = SqlString.format("SELECT * FROM Rides LIMIT ? OFFSET ?", [limit, offset]);
+  db.all(getRidesQuery, (err, rows) => {
     if (err) {
       logger.info(err);
       return res.send({
@@ -49,8 +50,8 @@ module.exports.GetRides = (db, limit, offset, res) => {
 };
 
 module.exports.InsertRide = (db, res, values) => {
-  const insertQuery = "INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)";
-  db.run(insertQuery, values, function InsertHandle(err) {
+  const insertQuery = SqlString.format("INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)", values);
+  db.run(insertQuery, function InsertHandle(err) {
     if (err) {
       logger.info(err);
       return res.send({
@@ -76,7 +77,7 @@ module.exports.InsertRide = (db, res, values) => {
 };
 
 module.exports.GetRideById = (db, res, id) => {
-  const findQuery = `SELECT * FROM Rides WHERE rideID='${id}'`;
+  const findQuery = SqlString.format("SELECT * FROM Rides WHERE rideID=?", id);
   db.all(findQuery, (err, rows) => {
     if (err) {
       logger.info(err);
