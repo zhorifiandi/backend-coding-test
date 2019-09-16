@@ -1,0 +1,47 @@
+config:
+  target: 'http://localhost:8010'
+  phases:
+    - duration: 30
+      arrivalRate: 100
+  payload:
+    path: "rides.csv"
+    fields:
+      - "ride_id"
+      - "page"
+      - "per_page"
+    order: sequence
+    skipHeader: true
+scenarios:
+  - name: "A user that fetch /rides on specific page"
+    weight: 100
+    flow:
+      - log: "A user fetch /rides?page={{ page }}&per_page={{ per_page }}"
+      - get:
+          url: "/rides?page={{ page }}&per_page={{ per_page }}"
+          headers:
+              Authorization: "Basic YWRtaW46c3VwZXJzZWNyZXQ="
+  - name: "A user that fetch /rides/:id"
+    weight: 100
+    flow:
+      - log: "A user fetch /rides/{{ ride_id }}"
+      - get:
+          url: "/rides/{{ ride_id }}"
+          headers:
+              Authorization: "Basic YWRtaW46c3VwZXJzZWNyZXQ="
+  - name: "A user that create rides"
+    weight: 100
+    flow:
+      - log: "New user create rides"
+      - post:
+          url: "/rides"
+          headers:
+              Authorization: "Basic YWRtaW46c3VwZXJzZWNyZXQ="
+              Content-Type: "application/json"
+          json:
+            start_lat: 0
+            start_long: 45
+            end_lat: -45
+            end_long: 0
+            rider_name: "Takeshi Yamamoto"
+            driver_name: "Kojiro Yamamoto"
+            driver_vehicle: "Supra X"
